@@ -7,41 +7,69 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
-
+//imports////////////////////////////////////////////////////////////////////////////////
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import { Form, HasError, AlertError } from 'vform';
+import moment from 'moment';
+import VueProgressBar from 'vue-progressbar';
+import Swal from 'sweetalert2';
+window.Swal = Swal;
+// event ////////////////////////////////////////////////////////////////////////////////
+//declare a variable called Eventers as the Event Listener
 
+window.Eventers = new Vue();
+
+//options////////////////////////////////////////////////////////////////////////////////
+//1. progressbar
+const ProgressBarOptions = {
+	color: '#bffaf3',
+	failedColor: '#874b4b',
+	thickness: '10px',
+	transition: {
+		speed: '0.2s',
+		opacity: '0.6s',
+		termination: 300
+	},
+	autoRevert: true,
+	location: 'top',
+	inverse: false
+};
+const Toast = Swal.mixin({
+	toast: true,
+	position: 'top-end',
+	showConfirmButton: false,
+	timer: 3000
+});
+window.Toast = Toast;
+
+//usage ////////////////////////////////////////////////////////////////////////////////
 Vue.use(VueRouter);
+Vue.use(VueProgressBar, ProgressBarOptions);
+window.Form = Form;
+Vue.component(HasError.name, HasError);
+Vue.component(AlertError.name, AlertError);
 
+// constants ////////////////////////////////////////////////////////////////////////////
 let routes = [
 	{ path: '/dashboard', component: require('./components/Dashboard.vue').default },
 	{ path: '/profiles', component: require('./components/Profiles.vue').default }
 ];
 
+let axios = require('axios').default;
 let router = new VueRouter({
 	mode: 'history',
 	routes // short for `routes: routes`
 });
 
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
-
-// const files = require.context('./', true, /\.vue$/i);
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
+//filters
+Vue.filter('properDateFilter', function(x) {
+	return moment(x).format('MMM DD YYYY');
+});
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
+// main ///////////////////////////////////////////////////////////////////////////////////
 const app = new Vue({
 	el: '#app',
 	router

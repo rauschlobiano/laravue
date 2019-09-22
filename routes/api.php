@@ -16,3 +16,10 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::apiResources([
+    'profiles' => 'API\ProfController',
+
+]);
+Route::get('getprofiletypes', 'API\ProfController@getProfTypes');
+Route::get('getprofilegroups', 'API\ProfController@getProfGroups');
+Route::get('getprofilestatus', 'API\ProfController@getProfStatus');
